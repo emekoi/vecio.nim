@@ -46,7 +46,7 @@ suite "test vectored io with different types of sockets":
     server.accept(incomming)
 
     discard incomming.readv(buf)
-    doAssert(buf == ["fo", "obar"])
+    check(buf == ["fo", "obar"])
     server.close()
 
   test "asynchronous sockets":
@@ -61,5 +61,5 @@ suite "test vectored io with different types of sockets":
       discard incomming.readv(buf)
 
     waitFor wrapAsync()
-    doAssert(buf == ["fo", "obar"])
+    check(buf == ["fo", "obar"])
     server.close()

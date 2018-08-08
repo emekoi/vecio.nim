@@ -1,12 +1,6 @@
-##  Copyright (c) 2018 emekoi
-##
-##  This library is free software; you can redistribute it and/or modify it
-##  under the terms of the MIT license. See LICENSE for details.
-##
-
 import winlean
 
-converter toWSABuffer(buffers: openarray[seq[byte] or string]): seq[WSABuf] =
+converter toWSABuffer(buffers: openarray[seq[byte] | string]): seq[WSABuf] =
   result = newSeq[WSABuf](buffers.len)
   for idx in 0 ..< buffers.len:
     let buf = buffers[idx]
@@ -15,13 +9,13 @@ converter toWSABuffer(buffers: openarray[seq[byte] or string]): seq[WSABuf] =
       len: cint(buf.len)
     )
 
-proc writev*(fd: SocketHandle, buffers: openarray[seq[byte] or string]): int =
+proc writev*(fd: SocketHandle, buffers: openarray[seq[byte] | string]): int {.tags: [WriteIOEffect], raises: [OSError].} =
   let bufs = toWSABuffer(buffers)
   let res = int(WSASend(fd, unsafeAddr bufs[0], cint(bufs.len), addr int32(result), 0, nil, nil))
   if res != 0:
     raiseOSError(osLastError())
 
-proc readv*(fd: SocketHandle, buffers: var openarray[seq[byte] or string]): int =
+proc readv*(fd: SocketHandle, buffers: var openarray[seq[byte] | string]): int {.tags: [ReadIOEffect], raises: [OSError].} =
   var bufs = toWSABuffer(buffers)
   let res = int(WSARecv(fd, unsafeAddr bufs[0], cint(bufs.len), addr int32(result), nil, nil, nil))
   if res != 0:
@@ -36,7 +30,7 @@ converter toWSABuffer(buffers: openarray[ptr string]): seq[WSABuf] =
       len: cint(buf[].len)
     )
 
-proc readv*(fd: SocketHandle, buffers: openarray[ptr string]): int =
+proc readv*(fd: SocketHandle, buffers: openarray[ptr string]): int {.tags: [ReadIOEffect], raises: [OSError].} =
   var bufs = toWSABuffer(buffers)
   let res = int(WSARecv(fd, unsafeAddr bufs[0], cint(bufs.len), addr int32(result), nil, nil, nil))
   if res != 0:
