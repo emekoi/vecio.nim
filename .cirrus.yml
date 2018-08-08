@@ -1,0 +1,6 @@
+container:
+  # image: nimlang/nim:devel
+  image: nimlang/nim:onbuild
+
+test_task:
+  test_script: nimble test
