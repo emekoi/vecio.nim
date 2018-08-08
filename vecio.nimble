@@ -1,3 +1,16 @@
+# Imports & Consts
+
+import strutils
+
+const indexFile = """
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="refresh" content="0; url=vecio.html" />
+  </head>
+</html>
+"""
+
 # Package
 
 version       = "0.1.0"
@@ -5,7 +18,7 @@ author        = "emekoi"
 description   = "vectored io for nim"
 license       = "MIT"
 srcDir        = "src"
-skipDirs      = @["tests"]
+skipDirs      = @["tests", "docs"]
 
 # Dependencies
 
@@ -15,6 +28,7 @@ task docs, "generate documentation":
   try:
     if not existsDir("docs"):
       mkDir("docs")
+    exec "printf '$1' > docs/index.html" % indexFile
     exec("nim doc2 -o:docs/vecio.html src/vecio.nim")
   except:
     discard
