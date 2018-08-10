@@ -11,13 +11,13 @@ when defined(windows):
 elif defined(unix):
   import posix
 
-proc writev*(fd: SocketHandle; buffers: openarray[seq[byte] | string]): int {.tags: [WriteIOEffect], raises: [OSError].}
+# proc writev*(fd: SocketHandle; buffers: openarray[seq[byte] | string]): int {.tags: [WriteIOEffect], raises: [OSError].}
   ## write to buffers in buffer
-proc readv*(fd: SocketHandle; buffers: var openarray[seq[byte] | string]): int {.tags: [ReadIOEffect], raises: [OSError].}
+# proc readv*(fd: SocketHandle; buffers: var openarray[seq[byte] | string]): int {.tags: [ReadIOEffect], raises: [OSError].}
   ## read data from ``fd`` into the contents of``buffers``
   ##
   ## Note: the contents of buffer must be ``shallow`` otherwise a copy of the contents of ``buffers`` is created and written to instead.
-proc readv*(fd: SocketHandle; buffers: openarray[ptr string]): int {.tags: [ReadIOEffect], raises: [OSError].}
+# proc readv*(fd: SocketHandle; buffers: openarray[ptr string]): int {.tags: [ReadIOEffect], raises: [OSError].}
   ## read data from ``fd`` into the contents of ``buffers``
 
 when defined(windows):
