@@ -29,10 +29,10 @@ suite "test vectored io with different types of sockets":
       one = newString(2)
       two = newString(4)
 
-    # one.shallow()
-    # two.shallow()
+    one.shallow()
+    two.shallow()
 
-    var buf = [one.addr, two.addr]
+    var buf = [one, two]
 
   test "synchronous sockets":
     var server = newSocket()
@@ -46,8 +46,7 @@ suite "test vectored io with different types of sockets":
     server.accept(incomming)
 
     discard incomming.readv(buf)
-    # check(buf == ["fo", "obar"])
-    echo repr buf
+    check(buf == ["fo", "obar"])
     server.close()
 
   test "asynchronous sockets":
@@ -62,6 +61,5 @@ suite "test vectored io with different types of sockets":
       discard incomming.readv(buf)
 
     waitFor wrapAsync()
-    # check(buf == ["fo", "obar"])
-    echo repr buf
+    check(buf == ["fo", "obar"])
     server.close()
