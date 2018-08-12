@@ -14,14 +14,14 @@ proc testSync(address: (string, Port)) =
     outgoing = newSocket()
     buf = ["foo", "bar"]
   outgoing.connect(address[0], address[1])
-  discard outgoing.writev(buf)
+  check outgoing.writev(buf) == 6
 
 proc testAsync(address: (string, Port)) {.async.} =
   let
     outgoing = newAsyncSocket()
     buf = ["foo", "bar"]
   waitFor outgoing.connect(address[0], address[1])
-  discard outgoing.writev(buf)
+  check outgoing.writev(buf) == 6
 
 suite "test vectored io with different types of sockets":
   setup:
@@ -29,10 +29,10 @@ suite "test vectored io with different types of sockets":
       one = newString(2)
       two = newString(4)
 
-    # one.shallow()
-    # two.shallow()
+    one.shallow()
+    two.shallow()
 
-    var buf = [one.addr, two.addr]
+    var buf = [one, two]
 
   test "synchronous sockets":
     var server = newSocket()
@@ -45,9 +45,8 @@ suite "test vectored io with different types of sockets":
     var incomming = new Socket
     server.accept(incomming)
 
-    discard incomming.readv(buf)
-    # check(buf == ["fo", "obar"])
-    echo repr buf
+    check incomming.readv(buf) == 6
+    check(buf == ["fo", "obar"])
     server.close()
 
   test "asynchronous sockets":
@@ -59,9 +58,8 @@ suite "test vectored io with different types of sockets":
     proc wrapAsync() {.async.} =
       asyncCheck testAsync(("localhost", Port(3444)))
       var incomming = waitFor server.accept()
-      discard incomming.readv(buf)
+      check incomming.readv(buf) == 6
 
     waitFor wrapAsync()
-    # check(buf == ["fo", "obar"])
-    echo repr buf
+    check(buf == ["fo", "obar"])
     server.close()
