@@ -3,19 +3,19 @@ type
     data: pointer
     len: uint
 
-converter toIoVector*(self: seq | string): IOVector =
+proc toIoVector*(self: seq | string): IOVector {. raises: [], tags: [].} =
   IOVector(
     data: unsafeAddr self[0],
     len: uint(self.len)
   )
 
-converter toIOVector*(self: (pointer, int)): IOVector =
+proc toIOVector*(self: (pointer, int)): IOVector {. raises: [], tags: [].} =
   IOVector(
     data: self[0],
     len: uint(self[1])
   )
 
-converter toIOVector*(self: ptr string): IOVector =
+proc toIOVector*(self: ptr[seq | string]): IOVector {. raises: [], tags: [].} =
   IOVector(
     data: unsafeAddr self[0],
     len: uint(self[].len)

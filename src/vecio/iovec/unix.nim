@@ -4,7 +4,7 @@ type
   IOVector* = object
     inner: IOVec
 
-converter toIoVector*(self: seq | string): IOVector =
+proc toIoVector*(self: seq | string): IOVector {.raises: [], tags: [].} =
   IOVector(
     inner: IOVec(
       iov_base: unsafeAddr self[0],
@@ -12,7 +12,7 @@ converter toIoVector*(self: seq | string): IOVector =
     )
   )
 
-converter toIOVector*(self: (pointer, int)): IOVector =
+proc toIOVector*(self: (pointer, int)): IOVector {.raises: [], tags: [].} =
   IOVector(
     inner: IOVec(
       iov_base: self[0],
@@ -20,7 +20,7 @@ converter toIOVector*(self: (pointer, int)): IOVector =
     )
   )
 
-converter toIOVector*(self: ptr string): IOVector =
+proc toIOVector*(self: ptr[seq | string]): IOVector {.raises: [], tags: [].} =
   IOVector(
     inner: IOVec(
       iov_base: unsafeAddr self[0],
@@ -28,5 +28,5 @@ converter toIOVector*(self: ptr string): IOVector =
     )
   )
 
-converter toNative*(self: IOVector): IOVec =
+proc toNative*(self: IOVector): IOVec {.raises: [], tags: [].} =
   self.inner

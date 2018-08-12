@@ -2,31 +2,31 @@ import winlean
 
 type
   IOVector* = object
-    inner: WSABuf
+    inner: TWSABuf
 
-converter toIoVector*(self: seq | string): IOVector =
+proc toIoVector*(self: seq | string): IOVector {. raises: [], tags: [].} =
   IOVector(
-    inner: WSABuf(
+    inner: TWSABuf(
       buf: unsafeAddr self[0],
       len: cint(self.len)
     )
   )
 
-converter toIOVector*(self: (pointer, int)): IOVector =
+proc toIOVector*(self: (pointer, int)): IOVector {. raises: [], tags: [].} =
   IOVector(
-    inner: WSABuf(
-      buf: self[0],
+    inner: TWSABuf(
+      buf: cast[cstring](self[0]),
       len: cint(self[1])
     )
   )
 
-converter toIOVector*(self: ptr string): IOVector =
+proc toIOVector*(self: ptr[seq | string]): IOVector {. raises: [], tags: [].} =
   IOVector(
-    inner: WSABuf(
+    inner: TWSABuf(
       buf: unsafeAddr self[0],
       len: cint(self[].len)
     )
   )
 
-converter toNative*(self: IOVector): WSABuf =
+proc toNative*(self: IOVector): TWSABuf {. raises: [], tags: [].} =
   self.inner

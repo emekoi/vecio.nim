@@ -6,11 +6,24 @@
 
 when defined(windows):
   include iovec/windows
+
+  type IntoIoVector* = concept s
+    type Native = TWSABuf
+
+    toIOVector(s) is IOVector
+    toIOVector(s).toNative() is Native
+
 elif defined(unix):
   include iovec/unix
+
+  type IntoIoVector* = concept s
+    type Native = IOVec
+
+    toIOVector(s) is IOVector
+    toIOVector(s).toNative() is Native
+
 else:
   include iovec/unknown
 
-type IntoIoVector* = concept s
-  toIOVector(s) is IOVector
-  return toIOVector(s)
+  type IntoIoVector* = concept s
+    IOVector(s) is IOVector

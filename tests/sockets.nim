@@ -10,18 +10,14 @@ import vecio
 
 
 proc testSync(address: (string, Port)) =
-  let
-    outgoing = newSocket()
-    buf = ["foo", "bar"]
+  let outgoing = newSocket()
   outgoing.connect(address[0], address[1])
-  discard outgoing.writev(buf)
+  check(outgoing.writev(["foo", "bar"]) == 6)
 
 proc testAsync(address: (string, Port)) {.async.} =
-  let
-    outgoing = newAsyncSocket()
-    buf = ["foo", "bar"]
+  let outgoing = newAsyncSocket()
   waitFor outgoing.connect(address[0], address[1])
-  discard outgoing.writev(buf)
+  check(outgoing.writev(["foo", "bar"]) == 6)
 
 suite "test vectored io with different types of sockets":
   setup:
@@ -45,7 +41,7 @@ suite "test vectored io with different types of sockets":
     var incomming = new Socket
     server.accept(incomming)
 
-    discard incomming.readv(buf)
+    check incomming.readv(buf) == 6
     check(buf == ["fo", "obar"])
     server.close()
 
@@ -58,7 +54,7 @@ suite "test vectored io with different types of sockets":
     proc wrapAsync() {.async.} =
       asyncCheck testAsync(("localhost", Port(3444)))
       var incomming = waitFor server.accept()
-      discard incomming.readv(buf)
+      check incomming.readv(buf) == 6
 
     waitFor wrapAsync()
     check(buf == ["fo", "obar"])

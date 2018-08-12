@@ -13,7 +13,7 @@ const indexFile = """
 
 # Package
 
-version       = "0.1.0"
+version       = "0.2.0"
 author        = "emekoi"
 description   = "vectored io for nim"
 license       = "MIT"
@@ -28,7 +28,8 @@ task docs, "generate documentation":
   try:
     if not existsDir("docs"):
       mkDir("docs")
-    exec "printf '$1' > docs/index.html" % indexFile
-    exec("nim doc2 -o:docs/vecio.html src/vecio.nim")
+    writeFile "docs/index.html", indexFile
+    exec "nim doc2 -o:docs/vecio.html src/vecio.nim"
+    exec "nim doc2 -o:docs/iovec.html src/vecio/iovec.nim"
   except:
     discard
