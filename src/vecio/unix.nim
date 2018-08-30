@@ -1,6 +1,6 @@
 import posix
 
-converter toIOVecBuffer(buffers: openarray[seq[byte] | string]): seq[IOVec] =
+converter toIOVecBuffer(buffers: openarray[var seq[byte] | var string]): seq[IOVec] =
   result = newSeq[IOVec](buffers.len)
   for idx in 0 ..< buffers.len:
     let buf = buffers[idx]
@@ -15,13 +15,13 @@ proc writev*(fd: SocketHandle; buffers: openarray[seq[byte] | string]): int {.ta
   if result == -1:
     raiseOSError(osLastError())
 
-proc readv*(fd: SocketHandle; buffers: var openarray[seq[byte] | string]): int {.tags: [ReadIOEffect], raises: [OSError].} =
+proc readv*(fd: SocketHandle; buffers: openarray[var seq[byte] | var string]): int {.tags: [ReadIOEffect], raises: [OSError].} =
   var bufs = toIOVecBuffer(buffers)
   result = int(readv(cint(fd), addr bufs[0], cint(bufs.len)))
   if result == -1:
     raiseOSError(osLastError())
 
-converter toIOVecBuffer(buffers: openarray[ptr string]): seq[IOVec] =
+converter toIOVecBuffer(buffers: openarray[ptr string | ptr byte]): seq[IOVec] =
   result = newSeq[IOVec](buffers.len)
   for idx in 0 ..< buffers.len:
     let buf = buffers[idx]
@@ -30,7 +30,7 @@ converter toIOVecBuffer(buffers: openarray[ptr string]): seq[IOVec] =
       iov_len: cint(buf[].len)
     )
 
-proc readv*(fd: SocketHandle; buffers: openarray[ptr string]): int {.tags: [ReadIOEffect], raises: [OSError].} =
+proc readv*(fd: SocketHandle; buffers: openarray[ptr string | ptr byte]): int {.tags: [ReadIOEffect], raises: [OSError].} =
   var bufs = toIOVecBuffer(buffers)
   result = int(readv(cint(fd), addr bufs[0], cint(bufs.len)))
   if result == -1:
