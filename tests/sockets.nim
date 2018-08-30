@@ -8,7 +8,6 @@ import asyncnet, asyncdispatch
 import net, unittest
 import vecio
 
-
 proc testSync(address: (string, Port)) =
   let outgoing = newSocket()
   outgoing.connect(address[0], address[1])
@@ -28,8 +27,6 @@ suite "test vectored io with different types of sockets":
     one.shallow()
     two.shallow()
 
-    var buf = [one, two]
-
   test "synchronous sockets":
     var server = newSocket()
     server.setSockOpt(OptReuseAddr, true)
@@ -41,8 +38,8 @@ suite "test vectored io with different types of sockets":
     var incomming = new Socket
     server.accept(incomming)
 
-    check incomming.readv(buf) == 6
-    check(buf == ["fo", "obar"])
+    check incomming.readv([one, two]) == 6
+    check([one, two] == ["fo", "obar"])
     server.close()
 
   test "asynchronous sockets":
@@ -54,8 +51,8 @@ suite "test vectored io with different types of sockets":
     proc wrapAsync() {.async.} =
       asyncCheck testAsync(("localhost", Port(3444)))
       var incomming = waitFor server.accept()
-      check incomming.readv(buf) == 6
+      check incomming.readv([one, two]) == 6
 
     waitFor wrapAsync()
-    check(buf == ["fo", "obar"])
+    check([one, two] == ["fo", "obar"])
     server.close()

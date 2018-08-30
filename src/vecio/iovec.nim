@@ -7,23 +7,28 @@
 when defined(windows):
   include iovec/windows
 
-  type IntoIoVector* = concept s
+  type IntoIoVector* = concept i, var j
     type Native = TWSABuf
 
-    toIOVector(s) is IOVector
-    toIOVector(s).toNative() is Native
+    toIOVector(i) is IOVector
+    toIOVector(j) is var IOVector
+    toIOVector(i).toNative() is Native
+    toIOVector(j).toNative() is Native
 
 elif defined(unix):
   include iovec/unix
 
-  type IntoIoVector* = concept s
+  type IntoIoVector* = concept i, var j
     type Native = IOVec
 
-    toIOVector(s) is IOVector
-    toIOVector(s).toNative() is Native
+    toIOVector(i) is IOVector
+    toIOVector(j) is var IOVector
+    toIOVector(i).toNative() is Native
+    toIOVector(j).toNative() is Native
 
 else:
   include iovec/unknown
 
-  type IntoIoVector* = concept s
-    IOVector(s) is IOVector
+  type IntoIoVector* = concept i, var j
+    IOVector(i) is IOVector
+    IOVector(j) is var IOVector

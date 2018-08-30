@@ -15,7 +15,7 @@ import vecio/iovec
 
 proc writev*(fd: SocketHandle; buffers: openarray[IntoIoVector]): int {.tags: [WriteIOEffect], raises: [OSError].}
   ## write to buffers in buffer
-proc readv*(fd: SocketHandle; buffers: var openarray[IntoIoVector]): int {.tags: [ReadIOEffect], raises: [OSError].}
+proc readv*(fd: SocketHandle; buffers: openarray[IntoIoVector]): int {.tags: [ReadIOEffect], raises: [OSError].}
  ## read data from ``fd`` into the contents of ``buffers``
  ##
  ## note: the contents of buffer must be ``shallow``, a ``ptr[seq | string]``, or a ``(pointer, len)``,

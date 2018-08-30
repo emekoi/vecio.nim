@@ -8,7 +8,7 @@ proc writev*(fd: SocketHandle; buffers: openarray[IntoIoVector]): int {.tags: [W
     raiseOSError(osLastError())
   written
 
-proc readv*(fd: SocketHandle; buffers: var openarray[IntoIoVector]): int {.tags: [ReadIOEffect], raises: [OSError].} =
+proc readv*(fd: SocketHandle; buffers: openarray[IntoIoVector]): int {.tags: [ReadIOEffect], raises: [OSError].} =
   var
     bufs = toIOVecBuffer(buffers)
     read = DWORD(0)

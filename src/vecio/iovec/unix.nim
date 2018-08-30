@@ -12,6 +12,14 @@ proc toIoVector*(self: seq | string): IOVector {.raises: [], tags: [].} =
     )
   )
 
+proc toIoVector*(self: var seq | var string): IOVector {.raises: [], tags: [].} =
+  IOVector(
+    inner: IOVec(
+      iov_base: unsafeAddr self[0],
+      iov_len: cint(self.len)
+    )
+  )
+
 proc toIOVector*(self: (pointer, int)): IOVector {.raises: [], tags: [].} =
   IOVector(
     inner: IOVec(
@@ -20,7 +28,7 @@ proc toIOVector*(self: (pointer, int)): IOVector {.raises: [], tags: [].} =
     )
   )
 
-proc toIOVector*(self: ptr[seq | string]): IOVector {.raises: [], tags: [].} =
+proc toIOVector*(self: ptr[string | byte]): IOVector {.raises: [], tags: [].} =
   IOVector(
     inner: IOVec(
       iov_base: unsafeAddr self[0],
