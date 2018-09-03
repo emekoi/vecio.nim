@@ -27,8 +27,4 @@ elif defined(unix):
     toIOVector(j).toNative() is Native
 
 else:
-  include iovec/unknown
-
-  type IntoIoVector* = concept i, var j
-    IOVector(i) is IOVector
-    IOVector(j) is var IOVector
+  {.fatal "platform not supported".}

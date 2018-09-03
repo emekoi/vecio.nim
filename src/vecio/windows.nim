@@ -1,6 +1,8 @@
 import winlean
 
-proc writev*(fd: SocketHandle; buffers: openarray[IntoIoVector]): int {.tags: [WriteIOEffect], raises: [OSError].} =
+proc writev*(socket: Socket; buffers: openarray[IntoIoVector]): int {.tags: [WriteIOEffect], raises: [OSError].} =
+  let fd = socket.getFD()
+  assert(fd != osInvalidSocket, "cannot `writev` on a closed socket")
   let bufs = toIOVecBuffer(buffers)
   var written = DWORD(0)
   let res = int(WSASend(fd, unsafeAddr bufs[0], cint(bufs.len), addr written, 0, nil, nil))
@@ -8,7 +10,9 @@ proc writev*(fd: SocketHandle; buffers: openarray[IntoIoVector]): int {.tags: [W
     raiseOSError(osLastError())
   written
 
-proc readv*(fd: SocketHandle; buffers: openarray[IntoIoVector]): int {.tags: [ReadIOEffect], raises: [OSError].} =
+proc readv*(socket: Socket; buffers: openarray[IntoIoVector]): int {.tags: [ReadIOEffect], raises: [OSError].} =
+  let fd = socket.getFD()
+  assert(fd != osInvalidSocket, "cannot `readv` on a closed socket")
   var
     bufs = toIOVecBuffer(buffers)
     read = DWORD(0)

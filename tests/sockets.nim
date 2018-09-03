@@ -6,7 +6,7 @@
 
 import asyncnet, asyncdispatch
 import net, unittest
-import vecio
+import vecio, vecio/async
 
 proc testSync(address: (string, Port)) =
   let outgoing = newSocket()

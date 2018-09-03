@@ -4,7 +4,7 @@
 ##  under the terms of the MIT license. See LICENSE for details.
 ##
 
-import ospaths, asyncnet, net
+import ospaths, net, nativesockets
 
 when defined(windows):
   import winlean
@@ -13,9 +13,9 @@ elif defined(unix):
 
 import vecio/iovec
 
-proc writev*(fd: SocketHandle; buffers: openarray[IntoIoVector]): int {.tags: [WriteIOEffect], raises: [OSError].}
+proc writev*(socket: Socket; buffers: openarray[IntoIoVector]): int {.tags: [WriteIOEffect], raises: [OSError].}
   ## write to buffers in buffer
-proc readv*(fd: SocketHandle; buffers: openarray[IntoIoVector]): int {.tags: [ReadIOEffect], raises: [OSError].}
+proc readv*(socket: Socket; buffers: openarray[IntoIoVector]): int {.tags: [ReadIOEffect], raises: [OSError].}
  ## read data from ``fd`` into the contents of ``buffers``
  ##
  ## note: the contents of buffer must be ``shallow``, a ``ptr[seq | string]``, or a ``(pointer, len)``,
@@ -34,10 +34,6 @@ elif defined(unix):
 else:
   {.fatal "platform not supported".}
 
-converter toSocketHandle*(a: AsyncSocket): SocketHandle =
-  ## obtain a ``SocketHandle`` from a ``AsyncSocket``
-  a.getFD()
-
-converter toSocketHandle*(s: Socket): SocketHandle =
-  ## obtain a ``SocketHandle`` from a ``Socket``
-  s.getFD()
+# converter toSocketHandle*(s: Socket): SocketHandle =
+#   ## obtain a ``SocketHandle`` from a ``Socket``
+#   s.getFD()
